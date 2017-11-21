@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "984104250345",
+    "firebase_url": "https://devfest-iot-d5c57.firebaseio.com",
+    "project_id": "devfest-iot-d5c57",
+    "storage_bucket": "devfest-iot-d5c57.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:984104250345:android:ba0e0cfd9e6b3956",
+        "android_client_info": {
+          "package_name": "de.devfest.iot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "984104250345-lme91gi1u1mlfkc63j2cpac8lo7snmbd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "de.devfest.iot",
+            "certificate_hash": "510b6a6fda39d12e7a287cf18a9472c5de4a5fc4"
+          }
+        },
+        {
+          "client_id": "984104250345-rhluohair0b8ja9pc1eo03lloa1icigv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSNjpAIerT-iaZml-XcR_0MkFHG0Cl2C4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "984104250345-rhluohair0b8ja9pc1eo03lloa1icigv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

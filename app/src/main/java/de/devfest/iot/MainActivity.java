@@ -5,40 +5,51 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.things.contrib.driver.button.Button;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 
 public class MainActivity extends Activity {
+
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String GPIO_BUTTON_PIN_NAME = "GPIO_35";
+    private static final String TEAM_NUMBER = "01";
 
-    private static final String gpioButtonPinName = "GPIO_35";
+    private DatabaseReference databaseReference;
     private Button button;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupFirebaseDatabase();
         setupButton();
     }
 
     @Override
     protected void onDestroy() {
         destroyButton();
+        destroyFirebaseDatabase();
         super.onDestroy();
+    }
+
+    private void setupFirebaseDatabase() {
+        databaseReference = FirebaseDatabase.getInstance().getReference("team" + TEAM_NUMBER);
+    }
+
+    private void destroyFirebaseDatabase() {
+        databaseReference = null;
     }
 
     private void setupButton() {
         try {
-            button = new Button(gpioButtonPinName,
-                    // high signal indicates the button is pressed
-                    // use with a pull-down resistor
-                    Button.LogicState.PRESSED_WHEN_HIGH
-            );
+            // high signal indicates the button is pressed (use with a pull-down resistor)
+            button = new Button(GPIO_BUTTON_PIN_NAME, Button.LogicState.PRESSED_WHEN_HIGH);
             button.setOnButtonEventListener(new Button.OnButtonEventListener() {
                 @Override
                 public void onButtonEvent(Button button, boolean pressed) {
-                    // do something awesome
-                    Log.d(TAG, "onButtonEvent: pressed");
+                    Log.v(TAG, "onButtonEvent: pressed=" + pressed);
+                    databaseReference.setValue(pressed);
                 }
             });
         } catch (IOException e) {
@@ -58,5 +69,4 @@ public class MainActivity extends Activity {
             }
         }
     }
-
 }
