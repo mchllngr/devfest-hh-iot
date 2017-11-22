@@ -5,40 +5,39 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.things.contrib.driver.button.Button;
+import com.google.android.things.pio.Gpio;
+import com.google.android.things.pio.PeripheralManagerService;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 
 public class MainActivity extends Activity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final String TEAM_ID = "00"; // TODO 01: set this to your team id
     private static final String GPIO_BUTTON_PIN_NAME = "GPIO_35";
-    private static final String TEAM_NUMBER = "01";
+    private static final String GPIO_LED_PIN_NAME = "GPIO_10";
 
     private DatabaseReference databaseReference;
     private Button button;
+    private Gpio led;
+    private ValueEventListener valueEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupFirebaseDatabase();
         setupButton();
-    }
-
-    @Override
-    protected void onDestroy() {
-        destroyButton();
-        destroyFirebaseDatabase();
-        super.onDestroy();
+        setupLed();
     }
 
     private void setupFirebaseDatabase() {
-        databaseReference = FirebaseDatabase.getInstance().getReference("team" + TEAM_NUMBER);
-    }
-
-    private void destroyFirebaseDatabase() {
-        databaseReference = null;
+        databaseReference = FirebaseDatabase.getInstance().getReference("team" + TEAM_ID);
     }
 
     private void setupButton() {
@@ -57,6 +56,60 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void setupLed() {
+        PeripheralManagerService peripheralManagerService = new PeripheralManagerService();
+        try {
+            led = peripheralManagerService.openGpio(GPIO_LED_PIN_NAME);
+            led.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);
+
+            valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    boolean value = (boolean) dataSnapshot.getValue(); // TODO add comment why boolean
+                    setLedValue(value);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) { /* ignored */ }
+            });
+        } catch (IOException e) {
+            // couldn't configure the led...
+        }
+    }
+
+    private void setLedValue(boolean value) {
+        try {
+            led.setValue(value);
+        } catch (IOException e) {
+            Log.e(TAG, "Error setting led value", e);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        destroyLed();
+        destroyButton();
+        destroyFirebaseDatabase();
+        super.onDestroy();
+    }
+
+    private void destroyLed() {
+        if (valueEventListener != null) {
+            databaseReference.removeEventListener(valueEventListener);
+            valueEventListener = null;
+        }
+        if (led != null) {
+            Log.i(TAG, "Closing led");
+            try {
+                led.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Error closing led", e);
+            } finally {
+                led = null;
+            }
+        }
+    }
+
     private void destroyButton() {
         if (button != null) {
             Log.i(TAG, "Closing button");
@@ -68,5 +121,9 @@ public class MainActivity extends Activity {
                 button = null;
             }
         }
+    }
+
+    private void destroyFirebaseDatabase() {
+        databaseReference = null;
     }
 }
