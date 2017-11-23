@@ -61,6 +61,8 @@ public class MainActivity extends Activity {
     }
 
     private void setupButton() {
+        // TODO 05: create a Button (located in package com.google.android.things.contrib.driver.button) for the button-gpio pin so that it is pressed when the signal is high
+        // TODO 06: set an event listener to receive the button state when changed
         try {
             // high signal indicates the button is pressed (use with a pull-down resistor)
             button = new Button(GPIO_BUTTON_PIN_NAME, Button.LogicState.PRESSED_WHEN_HIGH);
@@ -77,6 +79,7 @@ public class MainActivity extends Activity {
     }
 
     private void destroyButton() {
+        // TODO 07: destroy and remove the button
         if (button != null) {
             try {
                 button.setOnButtonEventListener(null);
@@ -90,6 +93,8 @@ public class MainActivity extends Activity {
     }
 
     private void setupLed() {
+        // TODO 08: create a gpio reference for the led using the PeripheralManagerService
+        // TODO 09: set the gpio direction to out and initially low
         PeripheralManagerService peripheralManagerService = new PeripheralManagerService();
         try {
             led = peripheralManagerService.openGpio(GPIO_LED_PIN_NAME);
@@ -100,6 +105,7 @@ public class MainActivity extends Activity {
     }
 
     private void destroyLed() {
+        // TODO 10: destroy and remove the led
         if (led != null) {
             try {
                 led.close();
@@ -112,6 +118,8 @@ public class MainActivity extends Activity {
     }
 
     private void setupFirebaseValueListener() {
+        // TODO 11: add a ValueEventListener to the DatabaseReference to receive value updates
+        // TODO 12: when receiving a value update set the new value to the led (hint: you may need to cast the value to boolean)
         valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -135,6 +143,7 @@ public class MainActivity extends Activity {
     }
 
     private void destroyFirebaseValueListener() {
+        // TODO 13: remove the ValueEventListener
         if (valueEventListener != null) {
             databaseReference.removeEventListener(valueEventListener);
             valueEventListener = null;
