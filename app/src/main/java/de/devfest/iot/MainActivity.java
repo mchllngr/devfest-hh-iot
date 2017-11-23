@@ -19,7 +19,7 @@ public class MainActivity extends Activity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final String TEAM_ID = "team00"; // TODO 01: set this to your team id
+    private static final String TEAM_ID = "teamXY"; // TODO 01: set this to your team id (e.g. team01)
 
     // For a complete list of available ports exposed by the breakout connectors see https://developer.android.com/things/hardware/imx7d-pico-io.html
     private static final String GPIO_BUTTON_PIN_NAME = "GPIO_35";
@@ -39,6 +39,8 @@ public class MainActivity extends Activity {
         setupButton();
         setupLed();
         setupFirebaseValueListener();
+
+        Log.i(TAG, "### READY ###");
     }
 
     @Override
@@ -92,9 +94,11 @@ public class MainActivity extends Activity {
         }
     }
 
+    // TODO 08: at this point you should already be able to update your team-value in Firebase with the push of the button
+
     private void setupLed() {
-        // TODO 08: create a gpio reference for the led using the PeripheralManagerService
-        // TODO 09: set the gpio direction to out and initially low
+        // TODO 09: create a gpio reference for the led using the PeripheralManagerService
+        // TODO 10: set the gpio direction to out and initially low
         PeripheralManagerService peripheralManagerService = new PeripheralManagerService();
         try {
             led = peripheralManagerService.openGpio(GPIO_LED_PIN_NAME);
@@ -105,7 +109,7 @@ public class MainActivity extends Activity {
     }
 
     private void destroyLed() {
-        // TODO 10: destroy and remove the led
+        // TODO 11: destroy and remove the led
         if (led != null) {
             try {
                 led.close();
@@ -118,8 +122,8 @@ public class MainActivity extends Activity {
     }
 
     private void setupFirebaseValueListener() {
-        // TODO 11: add a ValueEventListener to the DatabaseReference to receive value updates
-        // TODO 12: when receiving a value update set the new value to the led (hint: you may need to cast the value to boolean)
+        // TODO 12: add a ValueEventListener to the DatabaseReference to receive value updates
+        // TODO 13: when receiving a value update set the new value to the led (hint: you may need to cast the value to boolean)
         valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -143,7 +147,7 @@ public class MainActivity extends Activity {
     }
 
     private void destroyFirebaseValueListener() {
-        // TODO 13: remove the ValueEventListener
+        // TODO 14: remove the ValueEventListener
         if (valueEventListener != null) {
             databaseReference.removeEventListener(valueEventListener);
             valueEventListener = null;
